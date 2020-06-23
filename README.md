@@ -9,6 +9,6 @@ Flutter application to test login with Firebase
  - firebase_auth
  - google_sign_in
 
-## Issues/Bugs :
+## :exclamation: Issues/Bugs :
 
   - Login/Signup does not work using E-mail (21:46 IST 23-06-2020)
