@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_test/screens/firstScreen.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_test/utils/commons.dart';
 import 'dart:developer' as developer;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -47,36 +49,47 @@ void signOutGoogle() async {
   developer.log("User signed out", name: "Sign_In");
 }
 
-Future<String> signIn(String email, String password) async {
-  AuthResult result =
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-  FirebaseUser user = result.user;
+void signIn(BuildContext context, String email, String password) async {
+  _auth
+      .signInWithEmailAndPassword(email: email, password: password)
+      .then((res) async {
+//    assert(res.user != null);
+//    assert(await res.user.getIdToken() != null);
+//
+//    final FirebaseUser currentUser = await _auth.currentUser();
+//    assert(res.user.uid != currentUser.uid);
 
-  assert(user != null);
-  assert(await user.getIdToken() != null);
+    developer.log('User signed in : ${res.user.email}', name: "Sign_In");
 
-  final FirebaseUser currentUser = await _auth.currentUser();
-  assert (user.uid == currentUser.uid);
-
-  name = user.displayName;
-  email = user.email;
-  imageUrl = user.photoUrl ?? 'assets/user_generic.png';
-  if (name.contains(" ")) {
-    name = name.substring(0, name.indexOf(" "));
-  }
-
-  developer.log('User signed in : ${user.email}', name: "Sign_In");
-
-  print('signInWithEmail succeeded: $user');
-
-  return user.uid;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FirstScreen(
+          name: res.user.displayName,
+          email: res.user.email,
+        ),
+      ),
+    );
+  }).catchError((err) {
+    Commons.showErrorDialog(context, err.message);
+  });
 }
 
-Future<String> signUp(String email, String password) async {
-  AuthResult result = await _auth.createUserWithEmailAndPassword(
-      email: email, password: password);
-  FirebaseUser user = result.user;
-  return user.uid;
+void signUp(BuildContext context, String name, String email, String password) async {
+  _auth
+      .createUserWithEmailAndPassword(email: email, password: password)
+      .then((res) {
+//    Commons.showSnackBar('User created: ${res.user.uid}');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              FirstScreen(name: name, email: res.user.email)
+      ),
+    );
+  }).catchError((err) {
+    Commons.showErrorDialog(context, err.message);
+  });
 }
 
 Future<FirebaseUser> getCurrentUser() async {

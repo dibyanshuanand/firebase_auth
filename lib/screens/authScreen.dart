@@ -6,6 +6,7 @@ enum AuthMode { Signup, Login }
 
 class AuthScreen extends StatelessWidget {
   static const routeName = '/auth';
+  static final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +14,7 @@ class AuthScreen extends StatelessWidget {
 
     return Scaffold(
       // resizeToAvoidBottomInset: false,
+      // key: scaffoldKey,
       body: Stack(
         children: <Widget>[
           Container(

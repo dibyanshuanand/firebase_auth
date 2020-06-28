@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'authScreen.dart';
-import 'package:firebase_test/utils/sign_in.dart';
+import 'package:firebase_test/utils/sign_in.dart' as signIn;
 
 class FirstScreen extends StatelessWidget {
+
+  FirstScreen({this.name, this.email, this.photoUrl});
+
+  final String name, email, photoUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +25,8 @@ class FirstScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               CircleAvatar(
-                backgroundImage: AssetImage(
-                  'assets/user_generic.png',
-                ),
+                backgroundImage: photoUrl != null ? NetworkImage(photoUrl)
+                    : AssetImage('assets/user_generic.png',),
                 radius: 60,
                 backgroundColor: Colors.transparent,
               ),
@@ -36,7 +39,7 @@ class FirstScreen extends StatelessWidget {
                     color: Colors.black54),
               ),
               Text(
-                name ?? 'Shit',
+                name ?? signIn.name ?? 'Damn',
                 style: TextStyle(
                     fontSize: 25,
                     color: Colors.deepPurple,
@@ -51,7 +54,7 @@ class FirstScreen extends StatelessWidget {
                     color: Colors.black54),
               ),
               Text(
-                email ?? 'Shit',
+                email ?? signIn.email ??'Damn',
                 style: TextStyle(
                     fontSize: 25,
                     color: Colors.deepPurple,
@@ -60,8 +63,8 @@ class FirstScreen extends StatelessWidget {
               SizedBox(height: 40),
               RaisedButton(
                 onPressed: () {
-                  signOutGoogle();
-                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) {return AuthScreen();}), ModalRoute.withName('/'));
+                  signIn.signOutGoogle();
+                  Navigator.of(context).popAndPushNamed('/');
                 },
                 color: Colors.deepPurple,
                 child: Padding(

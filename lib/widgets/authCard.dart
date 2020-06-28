@@ -2,6 +2,7 @@ import 'package:firebase_test/screens/authScreen.dart';
 import 'package:firebase_test/screens/firstScreen.dart';
 import 'package:firebase_test/utils/sign_in.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
 
 class AuthCard extends StatefulWidget {
   const AuthCard({
@@ -13,7 +14,7 @@ class AuthCard extends StatefulWidget {
 }
 
 class _AuthCardState extends State<AuthCard> {
-  final GlobalKey<FormState> _formKey = GlobalKey();
+//  final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   Map<String, String> _authData = {
     'email': '',
@@ -22,19 +23,7 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  void _showErrorDialog(String message) {
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text("Error Found"),
-          content: Text('$message'),
-          actions: <Widget>[
-            FlatButton(child: Text('OK'),
-              onPressed: (){Navigator.of(ctx).pop();},)
-          ],
-        ));
-  }
+  final _nameController = TextEditingController();
 
 
   void _switchAuthMode() {
@@ -59,18 +48,24 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 320 : 260,
+        height: _authMode == AuthMode.Signup ? 375 : 260,
         constraints:
         BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey,
           child: Column(
             children: <Widget>[
+              if (_authMode == AuthMode.Signup)
+                TextFormField(
+                  enabled: _authMode == AuthMode.Signup,
+                  controller: _nameController,
+                  decoration: InputDecoration(labelText: 'Name'),
+                ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'E-Mail'),
                 keyboardType: TextInputType.emailAddress,
+                controller: _emailController,
                 validator: (value) {
                   if (value.isEmpty || !value.contains('@')) {
                     return 'Invalid email!';
@@ -120,19 +115,11 @@ class _AuthCardState extends State<AuthCard> {
                   Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                   onPressed: () {
                     if (_authMode == AuthMode.Login) {
-                      signIn(_emailController.text, _passwordController.text)
-                          .whenComplete(() {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => FirstScreen()),
-                        );
-                      }).catchError((e) => print(e));
+                      signIn(context, _emailController.text,
+                          _passwordController.text);
                     } else if (_authMode == AuthMode.Signup) {
-                      signUp(_emailController.text, _passwordController.text)
-                          .whenComplete(() {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => FirstScreen()),
-                        );
-                      }).catchError((e) => print(e));
+                      signUp(context, _nameController.text, _emailController.text,
+                          _passwordController.text);
                     }
                   },
                   shape: RoundedRectangleBorder(
