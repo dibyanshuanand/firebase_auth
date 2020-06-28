@@ -2,6 +2,12 @@
 
 Flutter application to test login with Firebase
 
+## Includes :
+
+ - Google Sign-In
+ - SignIn using E-mail & password
+ - SignUp using E-mail & password
+
 ## Plugins used :
 
  - firebase_core
@@ -11,4 +17,4 @@ Flutter application to test login with Firebase
 
 ## :exclamation: Issues/Bugs :
 
-  - Login/Signup does not work using E-mail (21:46 IST 23-06-2020)
+  - ~Login/Signup does not work using E-mail~ (18:24 IST 2020-06-28)
